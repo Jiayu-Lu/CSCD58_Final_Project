@@ -1,4 +1,6 @@
-cols = [
+from utils.algorithms import Algorithms as a
+
+FEATURE_COLUMNS = [
     "duration", 
     "protocol_type", 
     "service", 
@@ -43,7 +45,7 @@ cols = [
     "target"
 ]
 
-attacks_types = { 
+ATTACK_TYPES = { 
     "normal": "normal", 
     "back": "dos", 
     "buffer_overflow": "u2r", 
@@ -67,4 +69,12 @@ attacks_types = {
     "teardrop": "dos", 
     "warezclient": "r2l", 
     "warezmaster": "r2l", 
-} 
+}
+
+PROTOCOL_MAP = {"icmp":0, "tcp":1, "udp":2}
+
+FLAG_MAP = {"SF":0, "S0":1, "REJ":2, "RSTR":3, "RSTO":4, "SH":5, "S1":6, "S2":7, "RSTOS0":8, "S3":9, "OTH":10}
+
+ALGO_NAME_MAP = {
+    a.GNB : "Gaussian Naive Bayes"
+}
