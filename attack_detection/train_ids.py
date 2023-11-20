@@ -1,25 +1,36 @@
 import time
 import pandas as pd
 import logging as log
+import settings as s
+import utils.static_definitions as sd
  
-from joblib import load, dump
-from . import static_definitions as sd
+from joblib import dump
 from utils.algorithms import Algorithms as a
-from settings import TEST_DATA_SPLIT, DATA_SPLIT_SEED, TRAINED_MODELS_FULL_PATH
+from utils.utils import algo_to_filepath
 
 from sklearn.model_selection import train_test_split 
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import accuracy_score 
 
-from sklearn.naive_bayes import GaussianNB 
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression 
 
 
 class IDSTrainer():
 
-    def __init__(self, training_data):
-        self.df: pd.DataFrame = self.load_data(training_data)
+    def __init__(self, training_data_path):
+        self.df: pd.DataFrame = self.load_data(training_data_path)
         self.prepare_data()
-        self.algo_map = {a.GNB : self.trainGNB}
+        self.algo_map = {
+            a.GNB : self.createGNB,
+            a.DTREE : self.createDTree,
+            a.RF : self.createRF,
+            a.LR : self.createLogRegression,
+            a.SVC : self.createSVC,
+            a.GBC : self.createGBC
+            }
 
     def load_data(self, path: str) -> pd.DataFrame:
         df: pd.DataFrame = pd.read_csv(path, names = sd.FEATURE_COLUMNS)
@@ -46,7 +57,7 @@ class IDSTrainer():
         self.df["protocol_type"] = self.df["protocol_type"].map(sd.PROTOCOL_MAP)
         self.df["flag"] = self.df["flag"].map(sd.FLAG_MAP)
 
-    def train(self, algorithm, save=False):
+    def train(self, algorithm, split=True, save=False):
         # Split dataset
         df: pd.DataFrame = self.df.drop(["target"], axis=1)
 
@@ -57,21 +68,44 @@ class IDSTrainer():
         x = MinMaxScaler().fit_transform(df.drop(["Attack Type"], axis=1))
 
         # Split dataset
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=TEST_DATA_SPLIT, random_state=DATA_SPLIT_SEED) 
+        if split:
+            x_train, x_test, y_train, y_test = train_test_split(x,
+                                                                y, 
+                                                                test_size=s.TEST_DATA_SPLIT,
+                                                                random_state=s.DATA_SPLIT_SEED)
+        else:
+            x_train = x
+            x_test = x
+            y_train = y
+            y_test = y
 
         log.info(f"Training Model with {sd.ALGO_NAME_MAP[algorithm]}")
-        start_time: float = time.time()
-        model = self.algo_map[algorithm](x_train, y_train)
-        log.info(f"Training time: {time.time() - start_time}")
+        model = self.algo_map[algorithm]()
 
+        start_time: float = time.time()
+        model.fit(x_train, y_train.values.ravel())
+
+        log.info(f"Training time: {time.time() - start_time}")
         log.info(f"Train score is: {model.score(x_train, y_train)}") 
         log.info(f"Test score is: {model.score(x_test, y_test)}") 
 
         if save:
-            filename = sd.ALGO_NAME_MAP[algorithm].replace(" ", "_")
-            dump(model, TRAINED_MODELS_FULL_PATH + f"/{filename}.joblib")
+            dump(model, algo_to_filepath(algorithm))
 
-    def trainGNB(self, x: pd.DataFrame, y: pd.DataFrame):
-        model: GaussianNB = GaussianNB()
-        model.fit(x, y.values.ravel())
-        return model
+    def createGNB(self):
+        return GaussianNB()
+    
+    def createDTree(self):
+        return DecisionTreeClassifier(criterion=s.DTREE_CRITERION, max_depth=s.DTREE_MAX_DEPTH)
+    
+    def createRF(self):
+        return RandomForestClassifier(n_estimators=s.RF_N_ESTIMATORS) 
+    
+    def createSVC(self):
+        return SVC(gamma=s.SVC_GAMMA)
+    
+    def createLogRegression(self):
+        return LogisticRegression(max_iter=s.LOG_REG_MAX_ITER) 
+    
+    def createGBC(self):
+        return GradientBoostingClassifier(random_state=s.GBC_SEED)

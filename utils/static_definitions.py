@@ -76,5 +76,10 @@ PROTOCOL_MAP = {"icmp":0, "tcp":1, "udp":2}
 FLAG_MAP = {"SF":0, "S0":1, "REJ":2, "RSTR":3, "RSTO":4, "SH":5, "S1":6, "S2":7, "RSTOS0":8, "S3":9, "OTH":10}
 
 ALGO_NAME_MAP = {
-    a.GNB : "Gaussian Naive Bayes"
+    a.GNB : "Gaussian Naive Bayes",
+    a.DTREE : "Decision Tree",
+    a.LR : "Logistic Regression",
+    a.RF : "Random Forest",
+    a.GBC : "Gradient Descent",
+    a.SVC : "Support Vector Classifier"
 }

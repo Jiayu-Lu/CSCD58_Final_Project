@@ -10,4 +10,4 @@ if __name__ == "__main__":
     log.getLogger().setLevel(log.INFO)
 
     ids = IDSTrainer(TRAINING_DATA_FULL_PATH)
-    ids.train(Algorithms.GNB, save=True)
+    ids.train(Algorithms.GNB, split=False, save=True)
