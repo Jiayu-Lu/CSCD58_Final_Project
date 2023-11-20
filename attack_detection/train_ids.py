@@ -24,12 +24,12 @@ class IDSTrainer():
         self.df: pd.DataFrame = self.load_data(training_data_path)
         self.prepare_data()
         self.algo_map = {
-            a.GNB : self.createGNB,
-            a.DTREE : self.createDTree,
-            a.RF : self.createRF,
-            a.LR : self.createLogRegression,
-            a.SVC : self.createSVC,
-            a.GBC : self.createGBC
+            a.GNB: self.createGNB,
+            a.DTREE: self.createDTree,
+            a.RF: self.createRF,
+            a.LR: self.createLogRegression,
+            a.SVC: self.createSVC,
+            a.GBC: self.createGBC
             }
 
     def load_data(self, path: str) -> pd.DataFrame:
@@ -85,12 +85,14 @@ class IDSTrainer():
         start_time: float = time.time()
         model.fit(x_train, y_train.values.ravel())
 
-        log.info(f"Training time: {time.time() - start_time}")
-        log.info(f"Train score is: {model.score(x_train, y_train)}") 
-        log.info(f"Test score is: {model.score(x_test, y_test)}") 
-
         if save:
             dump(model, algo_to_filepath(algorithm))
+
+        log.info(s.DIVIDER)
+        log.info(f"Training time: {time.time() - start_time}")
+        log.info(f"Train score is: {model.score(x_train, y_train)}") 
+        log.info(f"Test score is: {model.score(x_test, y_test)}")
+        log.info(s.DIVIDER)
 
     def createGNB(self):
         return GaussianNB()

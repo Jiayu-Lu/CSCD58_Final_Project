@@ -1,5 +1,9 @@
 from utils.algorithms import Algorithms as a
 
+# String Constants
+DIVIDER = "----------------------------------------------------------------------"
+
+# Model Constants
 FEATURE_COLUMNS = [
     "duration", 
     "protocol_type", 
@@ -71,9 +75,22 @@ ATTACK_TYPES = {
     "warezmaster": "r2l", 
 }
 
-PROTOCOL_MAP = {"icmp":0, "tcp":1, "udp":2}
+# Maps
+PROTOCOL_MAP = {"icmp": 0, "tcp": 1, "udp": 2}
 
-FLAG_MAP = {"SF":0, "S0":1, "REJ":2, "RSTR":3, "RSTO":4, "SH":5, "S1":6, "S2":7, "RSTOS0":8, "S3":9, "OTH":10}
+FLAG_MAP = {
+    "SF": 0,
+    "S0": 1,
+    "REJ": 2,
+    "RSTR": 3,
+    "RSTO": 4,
+    "SH": 5,
+    "S1": 6,
+    "S2": 7,
+    "RSTOS0": 8,
+    "S3": 9,
+    "OTH": 10
+    }
 
 ALGO_NAME_MAP = {
     a.GNB : "Gaussian Naive Bayes",
