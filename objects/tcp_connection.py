@@ -4,12 +4,14 @@ from utils.static_definitions import PROTOCOL_MAP, FLAG_MAP
 
 class TCPConnection():
 
-    def __init__(self, protocol: str, service: str, land: bool, count_same: int, serror_rate: float,
+    def __init__(self, protocol: str, service: str, flag: str, land: bool, count_same: int, serror_rate: float,
                  rerror_rate: float, same_srv_rate: float, diff_srv_rate: float, dst_host_count: int, 
                  dst_host_srv_count: int, dst_host_diff_srv_rate: float, dst_host_same_src_port_rate: float,
                  dst_host_diff_src_port_rate: float):
         ### Object Properties ###
 
+        # Connection start time
+        self.start_time: float = time.time()
         # Is this connection currently active
         self.is_active: bool = True
         # Connection duration, fill out after connection closed
@@ -18,9 +20,9 @@ class TCPConnection():
         self.packets: scapy.packet = []
 
         ### TCP CONNECTION FEATURES ###
-
-        # Connection start time
-        self.start_time: float = time.time()
+        
+        # Packet flag
+        self.flag: int = FLAG_MAP[flag]
         # Connection protocol type (TCP, UDP, ...)
         self.protocol: int = PROTOCOL_MAP[protocol]
         # 1 if host and dest is the same ip/port, 0 otherwise
