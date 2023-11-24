@@ -20,7 +20,7 @@ class IDS():
     def classify_test(self, test):
         return self.model.predict(test)
 
-    def classify_packet(self):
+    def classify_connection(self):
         pass
 
 
