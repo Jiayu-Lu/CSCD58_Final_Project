@@ -100,3 +100,10 @@ ALGO_NAME_MAP = {
     a.GBC : "Gradient Descent",
     a.SVC : "Support Vector Classifier"
 }
+
+STANDARD_PORTS = {
+    "HTTP": [80, 8080],
+    "HTTPS": [443],
+    "FTP": [20, 21],
+    "SSH": [22]
+}

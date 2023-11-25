@@ -9,6 +9,12 @@ TEST_DATA_SPLIT = 0.33
 
 TRAINED_MODEL_PATH = "/attack_detection/trained_models"
 
+# Packet sniffer settings
+IF_NAME = "Wi-Fi 4"
+
+SERVER_IP = ""
+SERVER_PORT = ""
+
 # Select what models to train, set what you want to train to 'True'
 TO_TRAIN = {
     a.GBC: True,
@@ -22,6 +28,7 @@ TO_TRAIN = {
 # Should not be touched
 TRAINING_DATA_FULL_PATH = os.path.abspath(".") + TRAINING_DATA_PATH
 TRAINED_MODELS_FULL_PATH = os.path.abspath(".") + TRAINED_MODEL_PATH
+FILTER_STR = f"tcp"
 
 # Model settings (don't touch unless needed)
 DTREE_CRITERION = "entropy"

@@ -1,4 +1,6 @@
-import time, scapy
+import time
+
+from trimmed_packet import TrimmedPacket
 from utils.static_definitions import PROTOCOL_MAP, FLAG_MAP
 
 
@@ -17,7 +19,7 @@ class TCPConnection():
         # Connection duration, fill out after connection closed
         self.duration: float = -1.0
         # Packets that belong to this connection
-        self.packets: scapy.packet = []
+        self.packets: TrimmedPacket = []
 
         ### TCP CONNECTION FEATURES ###
         
