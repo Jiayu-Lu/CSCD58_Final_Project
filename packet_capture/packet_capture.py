@@ -3,39 +3,61 @@ import threading
 import time
 
 from queue import Queue
+from collections import deque
+
 from objects.trimmed_packet import TrimmedPacket
+from objects.tcp_connection import TCPConnection
 from settings import IF_NAME, FILTER_STR
 
-def print_packets_interval(packets):
-    t = time.time()
-    print("running")
-    count = 0
-
-    while count < 10:
-        if time.time() - t >= 1:
-            print(packets)
-            t = time.time()
-            count += 1
-
+'''
+Ideally we want to use this class to monitor traffic going into a single server,
+this way we can isolate/detect attacks happening to a single server. We can also demo and simulate attacks
+on a simple server. To isolate traffic we can filter our sniff to only show the ones going to our server
+IP/Port
+'''
 class PacketCapture():
 
     def __init__(self, timeout:float = (2**32 - 1)):
-        self.packets = Queue()
-        self.timeout = timeout
+        self.packets: Queue[scapy.packet.Packet] = Queue()
+        self.timeout: float = timeout
 
     def received_packet(self, packet):
         # print(packet)
         self.packets.put(TrimmedPacket(packet))
 
     def run(self):
+        connection_window: deque[TCPConnection] = deque()
+        active_connection: TCPConnection = None
+        oldest_connection: float = None
+
         t = threading.Thread(target=self.start_sniff)
         t.start()
+        generator = self.retrieve_packets()
+
+        for packet in generator:
+            if "S" in packet[scapy.TCP]:
+                # need to check if different connection if we have active
+                active_connection = TCPConnection()
+            elif active_connection and "F" in packet[scapy.TCP]:
+                active_connection.close_connection()
+                connection_window.append(active_connection)
+            #elif active_connection
+            
+
+
+
+        
+
+
+    def retrieve_packets(self):
         start = time.time()
-
-        packet_window = []
-
         while (time.time() - start) < self.timeout:
-            item = self.packets.get(block=True)
+            packet = self.packets.get(block=True)
+            if scapy.TCP in packet:
+                yield packet
+
+        return
+
 
             
 
