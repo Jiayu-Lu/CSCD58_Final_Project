@@ -31,11 +31,7 @@ class TrimmedPacket():
         self.src_ip = packet[scapy.IP].src
         self.dst_ip = packet[scapy.IP].dst
 
-        self.data = packet[scapy.Raw].load if scapy.Raw in packet else None
-
-        self.land: bool = (self.src_ip == self.dst_ip) and (self.src_port == self.dst_port)
-        
-
+        self.data: str | None = str(packet[scapy.Raw].load) if scapy.Raw in packet else None
 
     def __str__(self):
         msg = f"{self.protocol} packet of size {self.size} using service {self.service}\n"

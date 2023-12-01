@@ -3,3 +3,4 @@ __pycache__
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/misc.xml
+.DS_store

@@ -9,6 +9,8 @@ from scapy.all import *
 from objects.trimmed_packet import TrimmedPacket
 from packet_capture.packet_capture import PacketCapture
 
+from simulation.packet_sender import sim
+
 def test(packet):
     if TCP not in packet:
         return
@@ -27,5 +29,4 @@ if __name__ == "__main__":
 
     # ids = IDSTrainer(TRAINING_DATA_FULL_PATH)
     # ids.train(Algorithms.GNB, split=False, save=True)
-
-    PacketCapture().start()
+    sim()

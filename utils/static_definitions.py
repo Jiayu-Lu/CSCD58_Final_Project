@@ -3,7 +3,7 @@ from utils.algorithms import Algorithms as a
 # String Constants
 DIVIDER = "----------------------------------------------------------------------"
 
-# Model Constants
+# Model Constants (42)
 FEATURE_COLUMNS = [
     "duration", 
     "protocol_type", 
@@ -91,6 +91,17 @@ FLAG_MAP = {
     "S3": 9,
     "OTH": 10
     }
+
+CONNECTION_DATA_NAMES = ["count_same",
+                         "serror_count",
+                         "rerror_count",
+                         "same_srv_count",
+                         "diff_srv_count",
+                         "dst_host_count",
+                         "dst_host_srv_count",
+                         "dst_host_diff_srv_count",
+                         "dst_host_same_src_port_count",
+                         "dst_host_diff_src_port_count"]
 
 ALGO_NAME_MAP = {
     a.GNB : "Gaussian Naive Bayes",

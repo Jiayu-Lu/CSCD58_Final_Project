@@ -7,7 +7,12 @@ from collections import deque
 
 from objects.trimmed_packet import TrimmedPacket
 from objects.tcp_connection import TCPConnection
-from settings import IF_NAME, FILTER_STR, ATTACK_SERVER_IP, ATTACK_SERVER_PORT
+from settings import (IF_NAME, FILTER_STR, ATTACK_SERVER_IP, 
+                      ATTACK_SERVER_PORT, CONNECTION_WINDOW, SERVER_IP, SERVER_PORT)
+from utils.static_definitions import CONNECTION_DATA_NAMES, FLAG_MAP
+from utils.algorithms import Algorithms
+
+from attack_detection.ids import IDS
 
 '''
 Ideally we want to use this class to monitor traffic going into a single server,
@@ -19,83 +24,181 @@ IP/Port
 
 class PacketCapture():
 
-    def __init__(self, target_ip, target_port, timeout: float = (2 ** 32 - 1), detect_interval: float = 2):
+    def __init__(self, algo: Algorithms, timeout: float = (2 ** 32 - 1), detect_interval: int = 1000):
         self.timeout: float = timeout
-        # The time interval that we pop captured from queue, process each packet and run ML model
-        self.detect_interval = detect_interval
-
-        # The ip and port of the attacker
-        # Might remove port later since we're testing on localhost
-        self.target_ip = target_ip
-        self.target_port = target_port
+        # The time interval that we pop captured from queue, process each packet and run ML model (in milliseconds)
+        self.detect_interval: float = detect_interval / 1000
 
         # temporarily store packet for processing
-        self.packet_process_queue = Queue()
+        self.packet_process_queue: Queue[scapy.packet.Packet] = Queue()
         # current established tcp connection
-        self.current_connection = None
+        self.current_connection: TCPConnection = None
         # previously established connection
         self.connection_window: deque[TCPConnection] = deque()
 
+        self.ids = IDS(algo)
+
         # Flag to indicate intrusion detection
         # will stop capturing packets if intrusion_detected is false
-        self.intrusion_detected = False
+        self.intrusion_detected: bool = False
 
         # lock of packet process queue to ensure thread-safe access
-        self.queue_lock = threading.Lock()
+        # self.queue_lock = threading.Lock()
+
+        self.oldest_connection: float = -1
 
     # Method to start packet capture and packet analysis threads
     def run(self):
+        print("Starting Packet Capture!")
         packet_sniff = threading.Thread(target=self.start_sniff)
-        analyze_packet = threading.Thread(target=self.analyze_packet)
+        # analyze_packet = threading.Thread(target=self.analyze_packet)
 
         packet_sniff.start()
-        analyze_packet.start()
+        # analyze_packet.start()
+        self.analyze_packet()
 
 
     def detect_intrusion(self):
-        print("run our models here")
+        print("Predicting")
+        if self.current_connection is not None:
+            print(self.ids.classify_connection(self.current_connection))
 
     def analyze_packet(self):
-        while not self.intrusion_detected:
-            time.sleep(self.detect_interval)
+        prev: float = time.time()
+        start: float = time.time()
 
-            # This is where we extract packet data
-            while not self.packet_process_queue.empty():
-                packet = self.packet_process_queue.get()
-                print(f"pop packet:  {packet}")
-
-            self.detect_intrusion()
+        # This is where we extract packet data
+        while time.time() - start < self.timeout:
+            packet = self.packet_process_queue.get()
+            # print("Got packet!")
+            if self.current_connection is not None:
+                self.current_connection.add_packet(packet)
+            t = time.time()
+            if t - prev > self.detect_interval:
+                prev = t
+                self.detect_intrusion()
 
     def start_sniff(self):
-        while not self.intrusion_detected:
-            scapy.sniff(iface=IF_NAME, prn=self.queue_packet,
-                        filter=FILTER_STR + f" and host {self.target_ip} and port {self.target_port}")
+        scapy.sniff(iface=IF_NAME, prn=self.queue_packet, store=0)
 
     # Method for processing captured packets
-    def queue_packet(self, packet):
+    def queue_packet(self, packet: scapy.packet.Packet):
+        # Filter string does not work for me?
+        if scapy.TCP not in packet:
+            return
+        if packet[scapy.IP].src != ATTACK_SERVER_IP:
+            return
+        if packet[scapy.IP].dst != SERVER_IP:
+            return
+        if packet[scapy.TCP].sport != ATTACK_SERVER_PORT:
+            return
+        if packet[scapy.TCP].dport != SERVER_PORT:
+            return
+
         trimmed_packet = TrimmedPacket(packet)
         # print(f"captured packet:  {trimmed_packet}")
+        # print(trimmed_packet.data)
 
         if "S" in trimmed_packet.flags:
             self.queue_s_packet(trimmed_packet)
         elif "F" in trimmed_packet.flags:
             self.queue_f_packet(trimmed_packet)
-        else:
+        elif self.current_connection is not None:
             # add packet to queue
             self.packet_process_queue.put(trimmed_packet)
 
-    def queue_s_packet(self, trimmed_packet):
+    def queue_s_packet(self, trimmed_packet: TrimmedPacket):
         # initialize a new connection and add packet to queue
-        self.current_connection = TCPConnection()
-        self.packet_process_queue.put(trimmed_packet)
+        if self.current_connection is not None:
+            self.close_current_connection()
 
-    def queue_f_packet(self, trimmed_packet):
+        # print("STARTING NEW CONNECTION")
+        self.current_connection = self.create_tcp_connection(trimmed_packet)
+        # self.packet_process_queue.put(trimmed_packet)
+
+    def queue_f_packet(self, trimmed_packet: TrimmedPacket):
         # add packet to queue
-        self.packet_process_queue.put(trimmed_packet)
+        # self.packet_process_queue.put(trimmed_packet)
+        # print("ENDING CONNECTION")
+        if self.current_connection is not None:
+            self.current_connection.fin = True
+            self.close_current_connection()
 
-        # close connection and append closed-connection to connection window
+    def close_current_connection(self):
+        
         self.current_connection.close_connection()
         self.connection_window.append(self.current_connection)
+
+        if self.oldest_connection == -1.0:
+            self.oldest_connection = self.current_connection.end_time
+        else:
+            while time.time() - self.oldest_connection > CONNECTION_WINDOW:
+                self.connection_window.popleft()
+                if not self.connection_window:
+                    self.oldest_connection == -1.0
+                    break
+                self.oldest_connection = self.connection_window[0].end_time
+
+        self.current_connection = None
+
+    def create_tcp_connection(self, trimmed_packet: TrimmedPacket) -> TCPConnection:
+        data = self.calc_stats(trimmed_packet)
+        count_same = 1 if data["count_same"] == 0 else data["count_same"]
+        dst_host_count = 1 if data["dst_host_count"] == 0 else data["dst_host_count"]
+        return TCPConnection(trimmed_packet.protocol,
+                             trimmed_packet.src_ip,
+                             trimmed_packet.src_port,
+                             trimmed_packet.dst_ip,
+                             trimmed_packet.dst_port,
+                             trimmed_packet.service,
+                             trimmed_packet.src_ip == trimmed_packet.dst_ip and trimmed_packet.src_port == trimmed_packet.dst_port,
+                             count_same,
+                             data["serror_count"] / count_same,
+                             data["rerror_count"] / count_same,
+                             data["same_srv_count"] / count_same,
+                             data["diff_srv_count"] / count_same,
+                             dst_host_count,
+                             data["dst_host_srv_count"],
+                             data["dst_host_diff_srv_count"] / dst_host_count,
+                             data["dst_host_same_src_port_count"] / dst_host_count,
+                             data["dst_host_diff_src_port_count"] / dst_host_count,
+                             data["same_srv_count"]
+                )
+
+
+
+    def calc_stats(self, syn_packet: TrimmedPacket):
+        data = dict.fromkeys(CONNECTION_DATA_NAMES, 0)
+
+        for connection in self.connection_window:
+            if connection.source_ip == syn_packet.src_ip:
+                data["count_same"] += 1
+                if connection.flag == FLAG_MAP["S0"]:
+                    data["serror_count"] += 1
+                if connection.flag == FLAG_MAP["REJ"]:
+                    data["rerror_count"] += 1
+                if syn_packet.service == connection.service:
+                    data["same_srv_count"] += 1
+                else:
+                    data["diff_srv_count"] += 1
+            if syn_packet.dst_ip == connection.dest_ip:
+                data["dst_host_count"] += 1
+                if syn_packet.service == connection.service:
+                    data["dst_host_srv_count"] += 1
+                else:
+                    data["dst_host_diff_srv_count"] += 1
+                if syn_packet.dst_port == connection.dest_port:
+                    data["dst_host_same_src_port_count"] += 1
+                else:
+                    data["dst_host_diff_src_port_count"] += 1
+
+
+        return data
+
+
+
+
+
 
 
 

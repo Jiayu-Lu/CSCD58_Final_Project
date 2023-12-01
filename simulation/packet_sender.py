@@ -12,7 +12,7 @@ def send_packet(destination_ip, source_port, destination_port, data, flags):
     print(f"Sent {flags} packet to {destination_ip}:{destination_port}")
 
 
-if __name__ == "__main__":
+def sim():
     destination_ip = SERVER_IP
     source_port =  ATTACK_SERVER_PORT
     destination_port = SERVER_PORT
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     a_data = "acknowledge"
     data = "Hello, this is some fake data!"
     f_data = "finish sending packet"
-    number_of_packet_to_send = 100
+    number_of_packet_to_send = 1
 
     send_packet(destination_ip, source_port, destination_port, s_data, "S")
     send_packet(destination_ip, source_port, destination_port, a_data, "A")
