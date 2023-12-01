@@ -42,5 +42,6 @@ class TrimmedPacket():
         msg += f"\tflags: {self.flags}\n"
         msg += f"\tsource: {self.src_ip}:{self.src_port}\n"
         msg += f"\tdest: {self.dst_ip}:{self.dst_port}\n"
+        msg += f"\tdata: {self.data}\n"
         return msg
         

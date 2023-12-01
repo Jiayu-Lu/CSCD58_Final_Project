@@ -10,10 +10,12 @@ TEST_DATA_SPLIT = 0.33
 TRAINED_MODEL_PATH = "/attack_detection/trained_models"
 
 # Packet sniffer settings
-IF_NAME = "Wi-Fi 4"
+IF_NAME = "Software Loopback Interface 1"
 
-SERVER_IP = ""
-SERVER_PORT = ""
+SERVER_IP = "127.0.0.1"
+SERVER_PORT = 5000
+ATTACK_SERVER_IP = "127.0.0.1"
+ATTACK_SERVER_PORT = 4999
 
 # Select what models to train, set what you want to train to 'True'
 TO_TRAIN = {
