@@ -59,8 +59,8 @@ class PacketCapture():
 
 
     def detect_intrusion(self):
-        print("Predicting")
         if self.current_connection is not None:
+            print("Predicting")
             print(self.ids.classify_connection(self.current_connection))
 
     def analyze_packet(self):
@@ -86,14 +86,16 @@ class PacketCapture():
         # Filter string does not work for me?
         if scapy.TCP not in packet:
             return
+        if scapy.IP not in packet:
+            return
         if packet[scapy.IP].src != ATTACK_SERVER_IP:
             return
         if packet[scapy.IP].dst != SERVER_IP:
             return
-        if packet[scapy.TCP].sport != ATTACK_SERVER_PORT:
-            return
-        if packet[scapy.TCP].dport != SERVER_PORT:
-            return
+        # if packet[scapy.TCP].sport != ATTACK_SERVER_PORT:
+        #     return
+        # if packet[scapy.TCP].dport != SERVER_PORT:
+        #     return
 
         trimmed_packet = TrimmedPacket(packet)
         # print(f"captured packet:  {trimmed_packet}")
@@ -139,6 +141,7 @@ class PacketCapture():
                     break
                 self.oldest_connection = self.connection_window[0].end_time
 
+        # self.detect_intrusion()
         self.current_connection = None
 
     def create_tcp_connection(self, trimmed_packet: TrimmedPacket) -> TCPConnection:

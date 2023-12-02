@@ -17,6 +17,8 @@ SERVER_PORT = 8000
 ATTACK_SERVER_IP = "127.0.0.1"
 ATTACK_SERVER_PORT = 4999
 
+USING_ALGORITHM = a.GNB
+
 # Select what models to train, set what you want to train to 'True'
 TO_TRAIN = {
     a.GBC: True,

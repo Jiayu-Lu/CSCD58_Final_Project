@@ -161,8 +161,8 @@ class TCPConnection():
         else:
             self.dst_bytes += packet.size
 
-        print("CONNECTION_STATS")
-        print(self)
+        # print("CONNECTION_STATS")
+        # print(self)
 
         if packet.data is not None:
             if pd.LOGIN_KEYWORD in packet.data:

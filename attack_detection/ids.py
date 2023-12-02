@@ -64,6 +64,8 @@ class IDS():
 
         arr = pd.array(data).reshape(1, -1)
 
+        print(data)
+
         return self.model.predict(arr)
 
 
