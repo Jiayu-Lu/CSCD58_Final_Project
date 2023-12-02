@@ -71,12 +71,26 @@ class PacketCapture():
         while time.time() - start < self.timeout:
             packet = self.packet_process_queue.get()
             # print("Got packet!")
-            if self.current_connection is not None:
-                self.current_connection.add_packet(packet)
+            self.process_packet(packet)
             t = time.time()
             if t - prev > self.detect_interval:
                 prev = t
                 self.detect_intrusion()
+
+    def process_packet(self, packet: scapy.packet.Packet):
+
+        trimmed_packet = TrimmedPacket(packet)
+
+        if "S" in trimmed_packet.flags:
+            if self.current_connection is not None:
+                self.close_current_connection()
+            self.current_connection = self.create_tcp_connection(trimmed_packet)
+        elif "F" in trimmed_packet.flags:
+            if self.current_connection is not None:
+                self.current_connection.fin = True
+                self.close_current_connection()
+        elif self.current_connection is not None:
+            self.current_connection.add_packet(packet)
 
     def start_sniff(self):
         scapy.sniff(iface=IF_NAME, prn=self.queue_packet, store=0)
@@ -97,17 +111,19 @@ class PacketCapture():
         # if packet[scapy.TCP].dport != SERVER_PORT:
         #     return
 
-        trimmed_packet = TrimmedPacket(packet)
-        # print(f"captured packet:  {trimmed_packet}")
-        # print(trimmed_packet.data)
+        self.packet_process_queue.put(packet)
 
-        if "S" in trimmed_packet.flags:
-            self.queue_s_packet(trimmed_packet)
-        elif "F" in trimmed_packet.flags:
-            self.queue_f_packet(trimmed_packet)
-        elif self.current_connection is not None:
-            # add packet to queue
-            self.packet_process_queue.put(trimmed_packet)
+        # trimmed_packet = TrimmedPacket(packet)
+        # # print(f"captured packet:  {trimmed_packet}")
+        # # print(trimmed_packet.data)
+
+        # if "S" in trimmed_packet.flags:
+        #     self.queue_s_packet(trimmed_packet)
+        # elif "F" in trimmed_packet.flags:
+        #     self.queue_f_packet(trimmed_packet)
+        # elif self.current_connection is not None:
+        #     # add packet to queue
+        #     self.packet_process_queue.put(trimmed_packet)
 
     def queue_s_packet(self, trimmed_packet: TrimmedPacket):
         # initialize a new connection and add packet to queue

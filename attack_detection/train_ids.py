@@ -88,11 +88,11 @@ class IDSTrainer():
         if save:
             dump(model, algo_to_filepath(algorithm))
 
-        log.info(s.DIVIDER)
+        log.info(sd.DIVIDER)
         log.info(f"Training time: {time.time() - start_time}")
         log.info(f"Train score is: {model.score(x_train, y_train)}") 
         log.info(f"Test score is: {model.score(x_test, y_test)}")
-        log.info(s.DIVIDER)
+        log.info(sd.DIVIDER)
 
     def createGNB(self):
         return GaussianNB()
