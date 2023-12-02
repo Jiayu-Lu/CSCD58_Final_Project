@@ -13,11 +13,11 @@ TRAINED_MODEL_PATH = "/attack_detection/trained_models"
 IF_NAME = "lo0"
 
 SERVER_IP = "127.0.0.1"
-SERVER_PORT = 8000
+SERVER_PORT = 8081
 ATTACK_SERVER_IP = "127.0.0.1"
 ATTACK_SERVER_PORT = 4999
 
-USING_ALGORITHM = a.GNB
+USING_ALGORITHM = a.LR
 
 # Select what models to train, set what you want to train to 'True'
 TO_TRAIN = {

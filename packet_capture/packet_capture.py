@@ -90,7 +90,7 @@ class PacketCapture():
                 self.current_connection.fin = True
                 self.close_current_connection()
         elif self.current_connection is not None:
-            self.current_connection.add_packet(packet)
+            self.current_connection.add_packet(trimmed_packet)
 
     def start_sniff(self):
         scapy.sniff(iface=IF_NAME, prn=self.queue_packet, store=0)
