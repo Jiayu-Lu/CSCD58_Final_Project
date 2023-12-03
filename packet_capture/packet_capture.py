@@ -7,24 +7,35 @@ from collections import deque
 
 from objects.trimmed_packet import TrimmedPacket
 from objects.tcp_connection import TCPConnection
-from settings import (IF_NAME, FILTER_STR, ATTACK_SERVER_IP, 
-                      ATTACK_SERVER_PORT, CONNECTION_WINDOW, SERVER_IP, SERVER_PORT)
+from settings import (
+    IF_NAME,
+    FILTER_STR,
+    ATTACK_SERVER_IP,
+    ATTACK_SERVER_PORT,
+    CONNECTION_WINDOW,
+    SERVER_IP,
+    SERVER_PORT,
+)
 from utils.static_definitions import CONNECTION_DATA_NAMES, FLAG_MAP
 from utils.algorithms import Algorithms
 
 from attack_detection.ids import IDS
 
-'''
+"""
 Ideally we want to use this class to monitor traffic going into a single server,
 this way we can isolate/detect attacks happening to a single server. We can also demo and simulate attacks
 on a simple server. To isolate traffic we can filter our sniff to only show the ones going to our server
 IP/Port
-'''
+"""
 
 
-class PacketCapture():
-
-    def __init__(self, algo: Algorithms, timeout: float = (2 ** 32 - 1), detect_interval: int = 1000):
+class PacketCapture:
+    def __init__(
+        self,
+        algo: Algorithms,
+        timeout: float = (2**32 - 1),
+        detect_interval: int = 1000,
+    ):
         self.timeout: float = timeout
         # The time interval that we pop captured from queue, process each packet and run ML model (in milliseconds)
         self.detect_interval: float = detect_interval / 1000
@@ -49,7 +60,10 @@ class PacketCapture():
 
     # Method to start packet capture and packet analysis threads
     def run(self):
-        print("Starting Packet Capture!")
+        print("Started Intrusion Detection System")
+        print(
+            "In another terminal use the start-attack command to start an attack to this server"
+        )
         packet_sniff = threading.Thread(target=self.start_sniff)
         # analyze_packet = threading.Thread(target=self.analyze_packet)
 
@@ -57,10 +71,10 @@ class PacketCapture():
         # analyze_packet.start()
         self.analyze_packet()
 
-
     def detect_intrusion(self):
         if self.current_connection is not None:
-            print("Predicting")
+            print("Recieved a new packet.")
+            print("Predicting Intrusion:")
             print(self.ids.classify_connection(self.current_connection))
 
     def analyze_packet(self):
@@ -78,7 +92,6 @@ class PacketCapture():
                 self.detect_intrusion()
 
     def process_packet(self, packet: scapy.packet.Packet):
-
         trimmed_packet = TrimmedPacket(packet)
 
         if "S" in trimmed_packet.flags:
@@ -143,7 +156,6 @@ class PacketCapture():
             self.close_current_connection()
 
     def close_current_connection(self):
-        
         self.current_connection.close_connection()
         self.connection_window.append(self.current_connection)
 
@@ -164,27 +176,27 @@ class PacketCapture():
         data = self.calc_stats(trimmed_packet)
         count_same = 1 if data["count_same"] == 0 else data["count_same"]
         dst_host_count = 1 if data["dst_host_count"] == 0 else data["dst_host_count"]
-        return TCPConnection(trimmed_packet.protocol,
-                             trimmed_packet.src_ip,
-                             trimmed_packet.src_port,
-                             trimmed_packet.dst_ip,
-                             trimmed_packet.dst_port,
-                             trimmed_packet.service,
-                             trimmed_packet.src_ip == trimmed_packet.dst_ip and trimmed_packet.src_port == trimmed_packet.dst_port,
-                             count_same,
-                             data["serror_count"] / count_same,
-                             data["rerror_count"] / count_same,
-                             data["same_srv_count"] / count_same,
-                             data["diff_srv_count"] / count_same,
-                             dst_host_count,
-                             data["dst_host_srv_count"],
-                             data["dst_host_diff_srv_count"] / dst_host_count,
-                             data["dst_host_same_src_port_count"] / dst_host_count,
-                             data["dst_host_diff_src_port_count"] / dst_host_count,
-                             data["same_srv_count"]
-                )
-
-
+        return TCPConnection(
+            trimmed_packet.protocol,
+            trimmed_packet.src_ip,
+            trimmed_packet.src_port,
+            trimmed_packet.dst_ip,
+            trimmed_packet.dst_port,
+            trimmed_packet.service,
+            trimmed_packet.src_ip == trimmed_packet.dst_ip
+            and trimmed_packet.src_port == trimmed_packet.dst_port,
+            count_same,
+            data["serror_count"] / count_same,
+            data["rerror_count"] / count_same,
+            data["same_srv_count"] / count_same,
+            data["diff_srv_count"] / count_same,
+            dst_host_count,
+            data["dst_host_srv_count"],
+            data["dst_host_diff_srv_count"] / dst_host_count,
+            data["dst_host_same_src_port_count"] / dst_host_count,
+            data["dst_host_diff_src_port_count"] / dst_host_count,
+            data["same_srv_count"],
+        )
 
     def calc_stats(self, syn_packet: TrimmedPacket):
         data = dict.fromkeys(CONNECTION_DATA_NAMES, 0)
@@ -211,14 +223,7 @@ class PacketCapture():
                 else:
                     data["dst_host_diff_src_port_count"] += 1
 
-
         return data
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
