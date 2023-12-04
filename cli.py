@@ -82,6 +82,8 @@ def start_attack(context, attack_type):
     try:
         runner = SimulationRunner(attack_type)
         runner.start_attack()
+    except KeyboardInterrupt:
+        click.echo("Attack stopped")
     except Exception as e:
         click.echo(str(e))
         click.echo("Avaialable attack types are:\n")
@@ -92,7 +94,7 @@ def start_attack(context, attack_type):
 @click.pass_obj
 def start_ids(context):
     """
-    Monitor the packets recieved on a server
+    Monitor the packets recieved on a server and classify connections to it using an IDS
     """
     t = threading.Thread(target=start_server)
     t.start()
