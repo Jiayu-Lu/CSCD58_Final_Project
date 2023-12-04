@@ -127,9 +127,7 @@ def probe():
 
 def port_scan():
     """Uses nmap to check if server ports are open (probe)"""
-    max_port = 8100
-    for i in range(7900, max_port):
-        os.system(f"nmap -p {i} {SERVER_IP}")
+    os.system(f"nmap -p {SERVER_PORT} {SERVER_IP}")
 
 
 def ack_dos():
