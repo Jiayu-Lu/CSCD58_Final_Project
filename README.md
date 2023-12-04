@@ -3,9 +3,11 @@
 ## Installation
 
 - Download Python3
-- install requirements: `pip install -r requirements.txt`
-- run the CLI by running: `python cli.py start`
+- Install requirements: `pip install -r requirements.txt`
+- Run the CLI by running: `python cli.py start`
+- Adjust settings in `settings.py` to your liking
 
 ## More Information
 
-See the report (CSCD58_Project_report.pdf) for more information.
+- It is often the case that if the process is forcibly interrupted, the port running the server will still be in use when running a second time. If this is the case, change the port number by changing `SERVER_PORT` in `settings.py`
+- See the report (CSCD58_Project_report.pdf) for more information.
