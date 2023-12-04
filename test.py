@@ -9,7 +9,9 @@ from scapy.all import *
 from objects.trimmed_packet import TrimmedPacket
 from packet_capture.packet_capture import PacketCapture
 
-from simulation.packet_sender import sim
+from simulation.attack_types import sim
+from simulation.simulation_runner import SimulationRunner
+
 
 def test(packet):
     if TCP not in packet:
@@ -29,4 +31,6 @@ if __name__ == "__main__":
 
     # ids = IDSTrainer(TRAINING_DATA_FULL_PATH)
     # ids.train(Algorithms.GNB, split=False, save=True)
+    # runner = SimulationRunner("port_scan")
+    # runner.start_attack()
     sim()

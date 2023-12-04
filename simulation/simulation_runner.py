@@ -1,21 +1,15 @@
-import requests
+import importlib
 
-from scapy.all import send, IP, TCP, Raw, sr1
-from settings import IF_NAME, SERVER_IP, SERVER_PORT, ATTACK_SERVER_IP, ATTACK_SERVER_PORT
 
-class SimulationRunner():
+class SimulationRunner:
+    def __init__(self, attack_type):
+        try:
+            module = importlib.import_module(f"attack_types")
+            self.attack_func = getattr(module, attack_type)
+        except Exception:
+            raise Exception(
+                "Attack type does not exist. To create a new attack type, add a new function to simulation/attack_types.py"
+            )
 
-    def __init__(self):
-        pass
-
-    def request_resource(self):
-        requests.get(f"http://{SERVER_IP}:{SERVER_PORT}")
-
-    def send_packet(self, destination_ip, source_port, destination_port, data, flags):
-        ip = IP(dst=destination_ip)
-        tcp = TCP(sport=source_port, dport=destination_port, flags=flags)
-        raw = Raw(load=data)
-        packet = ip/tcp/raw
-        sr1(packet)
-
-        print(f"Sent {flags} packet to {destination_ip}:{destination_port}")
+    def start_attack(self):
+        self.attack_func()

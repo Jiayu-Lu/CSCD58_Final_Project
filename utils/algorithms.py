@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Algorithms(Enum):
     # Gaussian Naive Bayes
     GNB = 0
@@ -13,3 +14,6 @@ class Algorithms(Enum):
     LR = 4
     # Gradient Descent
     GBC = 5
+
+    def __str__(self):
+        return str(self.value)

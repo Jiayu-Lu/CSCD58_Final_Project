@@ -8,19 +8,28 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         # This method can be customized to handle GET requests
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-# Set up HTTP server
-handler_object = MyHttpRequestHandler
-my_server = TCPServer(("", SERVER_PORT), handler_object)
 
-# Get server IP
-host_name = socket.gethostname()
-host_ip = socket.gethostbyname(host_name)
-print(f"Server started at IP address {host_ip} on port {SERVER_PORT}")
+def start_server():
+    # Set up HTTP server
+    handler_object = MyHttpRequestHandler
+    my_server = TCPServer(("", SERVER_PORT), handler_object)
 
-try:
-    # Start server
-    my_server.serve_forever()
-except KeyboardInterrupt:
-    print("Server stopped.")
-    my_server.server_close()
+    # Get server IP
+    host_name = socket.gethostname()
+    try:
+        host_ip = socket.gethostbyname(host_name)
+    except Exception:
+        # Support for macOS
+        host_ip = socket.gethostbyname("localhost")
+    print(f"Server started at IP address {host_ip} on port {SERVER_PORT}")
 
+    try:
+        # Start server
+        my_server.serve_forever()
+    except KeyboardInterrupt:
+        print("Server stopped.")
+        my_server.server_close()
+
+
+if __name__ == "__main__":
+    start_server()
