@@ -19,6 +19,14 @@ from sklearn.linear_model import LogisticRegression
 
 
 class IDSTrainer():
+    """Represents an IDS trainer, used to train an IDS based of a variety of configs.
+
+    The data to use during training, and any model settings can be edited in settings.py
+
+    Attributes:
+        df (pd.dataframe): used to hold the loaded data
+        algo_map (dict[a]): a map of algorithms to their respective training functions
+    """
 
     def __init__(self, training_data_path):
         self.df: pd.DataFrame = self.load_data(training_data_path)

@@ -9,27 +9,29 @@ from objects.trimmed_packet import TrimmedPacket
 from objects.tcp_connection import TCPConnection
 from settings import (
     IF_NAME,
-    FILTER_STR,
     ATTACK_SERVER_IP,
-    ATTACK_SERVER_PORT,
     CONNECTION_WINDOW,
     SERVER_IP,
-    SERVER_PORT,
 )
 from utils.static_definitions import CONNECTION_DATA_NAMES, FLAG_MAP
 from utils.algorithms import Algorithms
 
 from attack_detection.ids import IDS
 
-"""
-Ideally we want to use this class to monitor traffic going into a single server,
-this way we can isolate/detect attacks happening to a single server. We can also demo and simulate attacks
-on a simple server. To isolate traffic we can filter our sniff to only show the ones going to our server
-IP/Port
-"""
-
-
 class PacketCapture:
+    """ Packet sniffer object, used to sniff packets on the network.
+
+    The packet capture starts the sniffer on another thread, and analyzes data coming from it.
+    It the packages the data and sends it to the IDS for classification.
+
+    Attributes:
+        timeout (float): timeout in seconds for the packet capture, default INT32_MAX
+        detect_interval (float): time interval to run the IDS, in milliseconds
+        packet_process_queue (Queue): thread-safe queue to communicate with packet sniffer
+        connection_window (deque): double-ended queue to hold connection information within the last 2 seconds
+        ids (IDS): the ids object to be used
+        oldest_connection (float): the oldest connection time value in the connection window.
+    """
     def __init__(
         self,
         algo: Algorithms,
@@ -49,13 +51,6 @@ class PacketCapture:
 
         self.ids = IDS(algo)
 
-        # Flag to indicate intrusion detection
-        # will stop capturing packets if intrusion_detected is false
-        self.intrusion_detected: bool = False
-
-        # lock of packet process queue to ensure thread-safe access
-        # self.queue_lock = threading.Lock()
-
         self.oldest_connection: float = -1
 
     # Method to start packet capture and packet analysis threads
@@ -65,15 +60,13 @@ class PacketCapture:
             "In another terminal use the start-attack command to start an attack to this server"
         )
         packet_sniff = threading.Thread(target=self.start_sniff)
-        # analyze_packet = threading.Thread(target=self.analyze_packet)
 
         packet_sniff.start()
-        # analyze_packet.start()
         self.analyze_packet()
 
     def detect_intrusion(self):
         if self.current_connection is not None:
-            print("Recieved a new packet.")
+            print("Received a new packet.")
             print("Predicting Intrusion:")
             print(self.ids.classify_connection(self.current_connection))
 
@@ -84,7 +77,6 @@ class PacketCapture:
         # This is where we extract packet data
         while time.time() - start < self.timeout:
             packet = self.packet_process_queue.get()
-            # print("Got packet!")
             self.process_packet(packet)
             t = time.time()
             if t - prev > self.detect_interval:
@@ -108,9 +100,7 @@ class PacketCapture:
     def start_sniff(self):
         scapy.sniff(iface=IF_NAME, prn=self.queue_packet, store=0)
 
-    # Method for processing captured packets
     def queue_packet(self, packet: scapy.packet.Packet):
-        # Filter string does not work for me?
         if scapy.TCP not in packet:
             return
         if scapy.IP not in packet:
@@ -119,41 +109,8 @@ class PacketCapture:
             return
         if packet[scapy.IP].dst != SERVER_IP:
             return
-        # if packet[scapy.TCP].sport != ATTACK_SERVER_PORT:
-        #     return
-        # if packet[scapy.TCP].dport != SERVER_PORT:
-        #     return
 
         self.packet_process_queue.put(packet)
-
-        # trimmed_packet = TrimmedPacket(packet)
-        # # print(f"captured packet:  {trimmed_packet}")
-        # # print(trimmed_packet.data)
-
-        # if "S" in trimmed_packet.flags:
-        #     self.queue_s_packet(trimmed_packet)
-        # elif "F" in trimmed_packet.flags:
-        #     self.queue_f_packet(trimmed_packet)
-        # elif self.current_connection is not None:
-        #     # add packet to queue
-        #     self.packet_process_queue.put(trimmed_packet)
-
-    def queue_s_packet(self, trimmed_packet: TrimmedPacket):
-        # initialize a new connection and add packet to queue
-        if self.current_connection is not None:
-            self.close_current_connection()
-
-        # print("STARTING NEW CONNECTION")
-        self.current_connection = self.create_tcp_connection(trimmed_packet)
-        # self.packet_process_queue.put(trimmed_packet)
-
-    def queue_f_packet(self, trimmed_packet: TrimmedPacket):
-        # add packet to queue
-        # self.packet_process_queue.put(trimmed_packet)
-        # print("ENDING CONNECTION")
-        if self.current_connection is not None:
-            self.current_connection.fin = True
-            self.close_current_connection()
 
     def close_current_connection(self):
         self.current_connection.close_connection()
@@ -169,13 +126,13 @@ class PacketCapture:
                     break
                 self.oldest_connection = self.connection_window[0].end_time
 
-        # self.detect_intrusion()
         self.current_connection = None
 
     def create_tcp_connection(self, trimmed_packet: TrimmedPacket) -> TCPConnection:
         data = self.calc_stats(trimmed_packet)
         count_same = 1 if data["count_same"] == 0 else data["count_same"]
         dst_host_count = 1 if data["dst_host_count"] == 0 else data["dst_host_count"]
+
         return TCPConnection(
             trimmed_packet.protocol,
             trimmed_packet.src_ip,
@@ -224,41 +181,3 @@ class PacketCapture:
                     data["dst_host_diff_src_port_count"] += 1
 
         return data
-
-
-if __name__ == "__main__":
-    packet_capture = PacketCapture(ATTACK_SERVER_IP, ATTACK_SERVER_PORT)
-    packet_capture.run()
-
-    # def run(self):
-    #     t = threading.Thread(target=self.start_sniff)
-    #     t.start()
-    #     generator = self.retrieve_packets()
-    #
-    #     for packet in generator:
-    #         if "S" in packet[scapy.TCP]:
-    #             # need to check if different connection if we have active
-    #             current_connection = TCPConnection()
-    #             self.connection_window.append(current_connection)
-    #             current_connection.add_packet(packet)
-    #             active_connection = TCPConnection()
-    #         elif active_connection and "F" in packet[scapy.TCP]:
-    #             active_connection.close_connection()
-    #             connection_window.append(active_connection)
-    #         #elif active_connection
-    #
-    # def received_packet(self, packet):
-    #     # print(packet)
-    #     self.packets.put(TrimmedPacket(packet))
-    #
-    # def retrieve_packets(self):
-    #     start = time.time()
-    #     while (time.time() - start) < self.timeout:
-    #         packet = self.packets.get(block=True)
-    #         if scapy.TCP in packet:
-    #             yield packet
-    #
-    #     return
-    #
-    # def start_sniff(self):
-    #     scapy.sniff(iface=IF_NAME, prn=self.received_packet, filter=f"src host {target_ip}")

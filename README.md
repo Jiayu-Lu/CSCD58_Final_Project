@@ -1,4 +1,4 @@
-# CSCD58 Fall 2023 Final Project - Packet Sniffer + Intrusion Detection System 
+# CSCD58 Fall 2023 Final Project - Packet Sniffer + Intrusion Detection System
 
 ## Installation
 

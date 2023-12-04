@@ -94,7 +94,7 @@ def start_attack(context, attack_type):
 @click.pass_obj
 def start_ids(context):
     """
-    Monitor the packets recieved on a server and classify connections to it using an IDS
+    Monitor the packets received on a server and classify connections to it using an IDS
     """
     t = threading.Thread(target=start_server)
     t.start()
@@ -131,4 +131,5 @@ def start(context):
     repl(context)
 
 
-cli()
+if __name__ == "__main__":
+    cli()

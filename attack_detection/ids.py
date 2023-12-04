@@ -8,11 +8,24 @@ from objects.tcp_connection import TCPConnection
 
 
 class IDS:
+    """ Class representing the IDS, responsible for loading the model, and classifying data.
+
+        Attributes:
+            model (sklearn): the scikit learn model loaded
+    """
     def __init__(self, algorithm: Algorithms):
         self.model = self.load_model(algorithm)
         print(f"Using algorithm: {ALGO_NAME_MAP[algorithm]}")
 
-    def load_model(self, algorithm):
+    def load_model(self, algorithm: Algorithms):
+        """Load the algorithm specified, sets self.model to the loaded algorithm.
+
+        Args:
+            algorithm: the algorithm to load
+        Raises:
+            FileNotFoundError: If the algorithm file is not found
+        
+        """
         filepath = algo_to_filepath(algorithm)
 
         if os.path.exists(filepath):
@@ -20,10 +33,14 @@ class IDS:
         else:
             raise FileNotFoundError("Model with that algorithm is not trained yet.")
 
-    def classify_test(self, test):
-        return self.model.predict(test)
-
     def classify_connection(self, connection: TCPConnection):
+        """ Classifies a connection into one of the attack types.
+
+        Args:
+            connection: the TCPConnection object to describe the current connection
+        Returns:
+            A value representing the type of attack the model deems the connection is
+        """
         data = []
 
         if connection is not None:

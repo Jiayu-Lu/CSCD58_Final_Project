@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>CSCD58_Final_Project.objects.tcp_connection API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>CSCD58_Final_Project.objects.tcp_connection</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import time
+import utils.payload_data as pd
+
+from trimmed_packet import TrimmedPacket
+from utils.static_definitions import PROTOCOL_MAP, FLAG_MAP
+from settings import LOGIN_THRESH, TRANSFER_THRESH
+
+
+
+class TCPConnection():
+    &#34;&#34;&#34;A TCP connection, holding updating information about the connection itself.
+
+    This class holds information on the different properties and statistics of the connection
+    itself, and connection within a 2 second window before it. When packets are added to the connection,
+    it also scans the packet analyzes properties of the packet actions.
+    &#34;&#34;&#34;
+    def __init__(self, protocol: int, source_ip: str, source_port: int, dest_ip: str, dest_port: int,
+                 service: str, land: bool, count_same: int, serror_rate: float,
+                 rerror_rate: float, same_srv_rate: float, diff_srv_rate: float, dst_host_count: int,
+                 dst_host_srv_count: int, dst_host_diff_srv_rate: float, dst_host_same_src_port_rate: float,
+                 dst_host_diff_src_port_rate: float, same_srv_count: int):
+        ### Object Properties ###
+    
+        # Connection start time
+        self.start_time: float = time.time()
+        # Is this connection currently active
+        self.is_active: bool = True
+        # Connection duration, fill out after connection closed
+        self.duration: float = -1.0
+        # Connection closing time
+        self.end_time: float = -1.0
+        # Packets that belong to this connection
+        self.packets: TrimmedPacket = []
+        # IP the connection is coming from
+        self.source_ip: str = source_ip
+        # Port the connection is coming from
+        self.source_port: int = source_port
+        # IP the connection is going to
+        self.dest_ip: str = dest_ip
+        # Port the connection is going to
+        self.dest_port: int = dest_port
+    
+        ### TCP CONNECTION FEATURES ###
+    
+        # Packet flag
+        self.flag: int = 0
+        # Connection protocol type (TCP, UDP, ...)
+        self.protocol: int = protocol
+        # 1 if host and dest is the same ip/port, 0 otherwise
+        self.land: bool = land
+        # Type of service (http, https, ftp, etc)
+        self.service: str = service
+        # Num bytes from source to dest
+        self.src_bytes: int = 0
+        # Num bytes from dest to source
+        self.dst_bytes: int = 0
+        # Num &#39;wrong&#39; fragments
+        self.wrong: int = 0
+        # Num &#39;urgent&#39; packets
+        self.urgent: int = 0
+        # flag to indicate if the SYN had an ACK in return
+        self.ack: bool = False
+        # flag to indicate RST was received
+        self.rst: bool = False
+        # flag to indicate FIN was received
+        self.fin: bool = False
+    
+        ### CONTENT FEATURES/DOMAIN KNOWLEDGE ###
+    
+        # Num &#39;hot&#39; indicators (unusual/suspicious activity)
+        self.hot: int = 0
+        # Num failed logins (ex. ssh attempts, account logins, ...)
+        self.failed_logins: int = 0
+        # Logged in (if this connection can be used to login, set to True when successful)
+        self.logged_in: bool = False
+        # Num compromised (number of indicators of compromised, unusual access times, root, unusual changes, etc)
+        self.compromised: int = 0
+        # Root shell (set to True if root privileges was obtained (ex. ssh connection))
+        self.root_shell: bool = False
+        # Set to 1 if &#39;sudo&#39; was attempted (ex. ssh connection)
+        self.su_attempted: bool = False
+        # Num file creations (num file creation operations used)
+        self.file_creations: int = 0
+        # Num shell prompts
+        self.shell_prompts: int = 0
+        # Num operations on access control files (ex. .ssh files)
+        self.num_access_control: int = 0
+        # Num of outbound file transfers (send files to and from the server)
+        self.num_outbound_ft: int = 0
+        # Is host login
+        self.is_host_login: bool = False
+        # Is the login a guest
+        self.is_guest_login: bool = False
+    
+        ### TRAFFIC FEATURES, 2 SECOND WINDOW ###
+    
+        # Number of connection made within 2 seconds before this one, to the same host
+        self.count_same: int = count_same
+    
+        # All measurements from below should use the connections counted by self.count
+    
+        # % of connections that had errors in the SYN stage (flag = S0, S1, S2, S3)
+        self.serror_rate: float = serror_rate
+        # % of connections that were rejected (flag = REG)
+        self.rerror_rate: float = rerror_rate
+        # Number of connections with the same service
+        self.same_srv_count: int = same_srv_count
+        # % of connections that are from the same service (http, https, etc) as self.service
+        self.same_srv_rate: float = same_srv_rate
+        # % of connections that are from a different service (http, https, etc) as self.service
+        self.diff_srv_rate: float = diff_srv_rate
+    
+        # Num connections having same dest IP in the last 2 seconds
+        self.dst_host_count: int = dst_host_count
+    
+        # All measurements from below should use the connections counted by self.dst_host_count
+    
+        # Num connections having same IP + same service
+        self.dst_host_srv_count: int = dst_host_srv_count
+        # % of connections that were with a different service as self.service
+        self.dst_host_diff_srv_rate: float = dst_host_diff_srv_rate
+        # % of connections that were to the same port, from self.dst_host_srv_count
+        self.dst_host_same_src_port_rate: float = dst_host_same_src_port_rate
+        # % of connections that were to different ports, from self.dst_host_srv_count
+        self.dst_host_diff_src_port_rate: float = dst_host_diff_src_port_rate
+        
+    def __str__(self):
+        msg = f&#34;TCP connection starts at: {self.start_time}\n&#34;
+        msg += f&#34;\tduration: {self.get_duration()}\n&#34;
+        msg += f&#34;\tis active: {self.is_active}\n&#34;
+        msg += f&#34;\tnumber of packets captured: {len(self.packets)}\n&#34;
+        return msg
+
+    def get_duration(self) -&gt; float:
+        return self.duration if not self.is_active else time.time() - self.start_time
+    
+    def close_connection(self):
+        self.is_active = False
+        self.end_time = time.time()
+        self.duration = self.end_time - self.start_time
+
+        if self.ack and self.fin:
+            self.flag = FLAG_MAP[&#34;SF&#34;]
+        elif self.ack and self.rst:
+            self.flag = FLAG_MAP[&#34;RSTOS0&#34;]
+        elif self.rst:
+            self.flag = FLAG_MAP[&#34;REJ&#34;]
+        else:
+            self.flag = FLAG_MAP[&#34;S0&#34;]
+
+
+    def add_packet(self, packet: TrimmedPacket):
+        # add packets to list
+        self.packets.append(packet)
+
+        # Check flags
+        if &#34;R&#34; in packet.flags:
+            self.rst = True
+        if &#34;A&#34; in packet.flags:
+            self.ack = True
+        if &#34;U&#34; in packet.flags:
+            self.urgent += 1
+
+        # Add data size
+        if packet.src_ip == self.source_ip:
+            self.src_bytes += packet.size
+        else:
+            self.dst_bytes += packet.size
+
+        #print(&#34;CONNECTION_STATS&#34;)
+        #print(self)
+
+        if packet.data is not None:
+            print(packet.data)
+            if pd.LOGIN_KEYWORD in packet.data:
+                self.analyze_login(packet.data)
+            else:
+                self.analyze_action(packet.data)
+
+        # Need to setup some sort of domain knowledge
+
+    def analyze_action(self, data: str):
+        if pd.Actions.SUDO.name in data:
+            self.su_attempted = True
+        if pd.Actions.OPEN_SHELL.name in data:
+            self.shell_prompts += 1
+        if pd.Actions.CLOSE_SHELL.name in data:
+            self.shell_prompts = 0 if self.shell_prompts == 0 else self.shell_prompts - 1
+        if pd.Actions.CREATE_FILE.name in data:
+            self.file_creations += 1
+        if pd.Actions.FILE_TRANSFER.name in data:
+            self.num_outbound_ft += 1
+            if self.num_outbound_ft &gt; TRANSFER_THRESH:
+                self.compromised += 1
+                self.hot += 1
+        if pd.Actions.ACCESS_CONTROL_FILE.name in data:
+            self.num_access_control += 1
+        if pd.Actions.ACCESS_RESTRICTED_RES.name in data:
+            self.hot += 1
+        if pd.Actions.MODIFY_RESTRICTED_RES.name in data:
+            self.hot += 1
+
+    def analyze_login(self, data: str):
+        if pd.LoginStatus.FAILED.name in data:
+            self.failed_logins += 1
+            if self.failed_logins &gt; LOGIN_THRESH:
+                self.hot += 1
+        else:
+            self.logged_in = True
+            if self.failed_logins &gt; LOGIN_THRESH:
+                self.compromised += 1
+            if pd.LoginStatus.ROOT.name in data:
+                self.root_shell = True
+                self.compromised += 1
+            if pd.LoginStatus.HOST.name in data:
+                self.is_host_login = True
+            else:
+                self.is_guest_login = True</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="CSCD58_Final_Project.objects.tcp_connection.TCPConnection"><code class="flex name class">
+<span>class <span class="ident">TCPConnection</span></span>
+<span>(</span><span>protocol: int, source_ip: str, source_port: int, dest_ip: str, dest_port: int, service: str, land: bool, count_same: int, serror_rate: float, rerror_rate: float, same_srv_rate: float, diff_srv_rate: float, dst_host_count: int, dst_host_srv_count: int, dst_host_diff_srv_rate: float, dst_host_same_src_port_rate: float, dst_host_diff_src_port_rate: float, same_srv_count: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A TCP connection, holding updating information about the connection itself.</p>
+<p>This class holds information on the different properties and statistics of the connection
+itself, and connection within a 2 second window before it. When packets are added to the connection,
+it also scans the packet analyzes properties of the packet actions.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TCPConnection():
+    &#34;&#34;&#34;A TCP connection, holding updating information about the connection itself.
+
+    This class holds information on the different properties and statistics of the connection
+    itself, and connection within a 2 second window before it. When packets are added to the connection,
+    it also scans the packet analyzes properties of the packet actions.
+    &#34;&#34;&#34;
+    def __init__(self, protocol: int, source_ip: str, source_port: int, dest_ip: str, dest_port: int,
+                 service: str, land: bool, count_same: int, serror_rate: float,
+                 rerror_rate: float, same_srv_rate: float, diff_srv_rate: float, dst_host_count: int,
+                 dst_host_srv_count: int, dst_host_diff_srv_rate: float, dst_host_same_src_port_rate: float,
+                 dst_host_diff_src_port_rate: float, same_srv_count: int):
+        ### Object Properties ###
+    
+        # Connection start time
+        self.start_time: float = time.time()
+        # Is this connection currently active
+        self.is_active: bool = True
+        # Connection duration, fill out after connection closed
+        self.duration: float = -1.0
+        # Connection closing time
+        self.end_time: float = -1.0
+        # Packets that belong to this connection
+        self.packets: TrimmedPacket = []
+        # IP the connection is coming from
+        self.source_ip: str = source_ip
+        # Port the connection is coming from
+        self.source_port: int = source_port
+        # IP the connection is going to
+        self.dest_ip: str = dest_ip
+        # Port the connection is going to
+        self.dest_port: int = dest_port
+    
+        ### TCP CONNECTION FEATURES ###
+    
+        # Packet flag
+        self.flag: int = 0
+        # Connection protocol type (TCP, UDP, ...)
+        self.protocol: int = protocol
+        # 1 if host and dest is the same ip/port, 0 otherwise
+        self.land: bool = land
+        # Type of service (http, https, ftp, etc)
+        self.service: str = service
+        # Num bytes from source to dest
+        self.src_bytes: int = 0
+        # Num bytes from dest to source
+        self.dst_bytes: int = 0
+        # Num &#39;wrong&#39; fragments
+        self.wrong: int = 0
+        # Num &#39;urgent&#39; packets
+        self.urgent: int = 0
+        # flag to indicate if the SYN had an ACK in return
+        self.ack: bool = False
+        # flag to indicate RST was received
+        self.rst: bool = False
+        # flag to indicate FIN was received
+        self.fin: bool = False
+    
+        ### CONTENT FEATURES/DOMAIN KNOWLEDGE ###
+    
+        # Num &#39;hot&#39; indicators (unusual/suspicious activity)
+        self.hot: int = 0
+        # Num failed logins (ex. ssh attempts, account logins, ...)
+        self.failed_logins: int = 0
+        # Logged in (if this connection can be used to login, set to True when successful)
+        self.logged_in: bool = False
+        # Num compromised (number of indicators of compromised, unusual access times, root, unusual changes, etc)
+        self.compromised: int = 0
+        # Root shell (set to True if root privileges was obtained (ex. ssh connection))
+        self.root_shell: bool = False
+        # Set to 1 if &#39;sudo&#39; was attempted (ex. ssh connection)
+        self.su_attempted: bool = False
+        # Num file creations (num file creation operations used)
+        self.file_creations: int = 0
+        # Num shell prompts
+        self.shell_prompts: int = 0
+        # Num operations on access control files (ex. .ssh files)
+        self.num_access_control: int = 0
+        # Num of outbound file transfers (send files to and from the server)
+        self.num_outbound_ft: int = 0
+        # Is host login
+        self.is_host_login: bool = False
+        # Is the login a guest
+        self.is_guest_login: bool = False
+    
+        ### TRAFFIC FEATURES, 2 SECOND WINDOW ###
+    
+        # Number of connection made within 2 seconds before this one, to the same host
+        self.count_same: int = count_same
+    
+        # All measurements from below should use the connections counted by self.count
+    
+        # % of connections that had errors in the SYN stage (flag = S0, S1, S2, S3)
+        self.serror_rate: float = serror_rate
+        # % of connections that were rejected (flag = REG)
+        self.rerror_rate: float = rerror_rate
+        # Number of connections with the same service
+        self.same_srv_count: int = same_srv_count
+        # % of connections that are from the same service (http, https, etc) as self.service
+        self.same_srv_rate: float = same_srv_rate
+        # % of connections that are from a different service (http, https, etc) as self.service
+        self.diff_srv_rate: float = diff_srv_rate
+    
+        # Num connections having same dest IP in the last 2 seconds
+        self.dst_host_count: int = dst_host_count
+    
+        # All measurements from below should use the connections counted by self.dst_host_count
+    
+        # Num connections having same IP + same service
+        self.dst_host_srv_count: int = dst_host_srv_count
+        # % of connections that were with a different service as self.service
+        self.dst_host_diff_srv_rate: float = dst_host_diff_srv_rate
+        # % of connections that were to the same port, from self.dst_host_srv_count
+        self.dst_host_same_src_port_rate: float = dst_host_same_src_port_rate
+        # % of connections that were to different ports, from self.dst_host_srv_count
+        self.dst_host_diff_src_port_rate: float = dst_host_diff_src_port_rate
+        
+    def __str__(self):
+        msg = f&#34;TCP connection starts at: {self.start_time}\n&#34;
+        msg += f&#34;\tduration: {self.get_duration()}\n&#34;
+        msg += f&#34;\tis active: {self.is_active}\n&#34;
+        msg += f&#34;\tnumber of packets captured: {len(self.packets)}\n&#34;
+        return msg
+
+    def get_duration(self) -&gt; float:
+        return self.duration if not self.is_active else time.time() - self.start_time
+    
+    def close_connection(self):
+        self.is_active = False
+        self.end_time = time.time()
+        self.duration = self.end_time - self.start_time
+
+        if self.ack and self.fin:
+            self.flag = FLAG_MAP[&#34;SF&#34;]
+        elif self.ack and self.rst:
+            self.flag = FLAG_MAP[&#34;RSTOS0&#34;]
+        elif self.rst:
+            self.flag = FLAG_MAP[&#34;REJ&#34;]
+        else:
+            self.flag = FLAG_MAP[&#34;S0&#34;]
+
+
+    def add_packet(self, packet: TrimmedPacket):
+        # add packets to list
+        self.packets.append(packet)
+
+        # Check flags
+        if &#34;R&#34; in packet.flags:
+            self.rst = True
+        if &#34;A&#34; in packet.flags:
+            self.ack = True
+        if &#34;U&#34; in packet.flags:
+            self.urgent += 1
+
+        # Add data size
+        if packet.src_ip == self.source_ip:
+            self.src_bytes += packet.size
+        else:
+            self.dst_bytes += packet.size
+
+        #print(&#34;CONNECTION_STATS&#34;)
+        #print(self)
+
+        if packet.data is not None:
+            print(packet.data)
+            if pd.LOGIN_KEYWORD in packet.data:
+                self.analyze_login(packet.data)
+            else:
+                self.analyze_action(packet.data)
+
+        # Need to setup some sort of domain knowledge
+
+    def analyze_action(self, data: str):
+        if pd.Actions.SUDO.name in data:
+            self.su_attempted = True
+        if pd.Actions.OPEN_SHELL.name in data:
+            self.shell_prompts += 1
+        if pd.Actions.CLOSE_SHELL.name in data:
+            self.shell_prompts = 0 if self.shell_prompts == 0 else self.shell_prompts - 1
+        if pd.Actions.CREATE_FILE.name in data:
+            self.file_creations += 1
+        if pd.Actions.FILE_TRANSFER.name in data:
+            self.num_outbound_ft += 1
+            if self.num_outbound_ft &gt; TRANSFER_THRESH:
+                self.compromised += 1
+                self.hot += 1
+        if pd.Actions.ACCESS_CONTROL_FILE.name in data:
+            self.num_access_control += 1
+        if pd.Actions.ACCESS_RESTRICTED_RES.name in data:
+            self.hot += 1
+        if pd.Actions.MODIFY_RESTRICTED_RES.name in data:
+            self.hot += 1
+
+    def analyze_login(self, data: str):
+        if pd.LoginStatus.FAILED.name in data:
+            self.failed_logins += 1
+            if self.failed_logins &gt; LOGIN_THRESH:
+                self.hot += 1
+        else:
+            self.logged_in = True
+            if self.failed_logins &gt; LOGIN_THRESH:
+                self.compromised += 1
+            if pd.LoginStatus.ROOT.name in data:
+                self.root_shell = True
+                self.compromised += 1
+            if pd.LoginStatus.HOST.name in data:
+                self.is_host_login = True
+            else:
+                self.is_guest_login = True</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.add_packet"><code class="name flex">
+<span>def <span class="ident">add_packet</span></span>(<span>self, packet: trimmed_packet.TrimmedPacket)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_packet(self, packet: TrimmedPacket):
+    # add packets to list
+    self.packets.append(packet)
+
+    # Check flags
+    if &#34;R&#34; in packet.flags:
+        self.rst = True
+    if &#34;A&#34; in packet.flags:
+        self.ack = True
+    if &#34;U&#34; in packet.flags:
+        self.urgent += 1
+
+    # Add data size
+    if packet.src_ip == self.source_ip:
+        self.src_bytes += packet.size
+    else:
+        self.dst_bytes += packet.size
+
+    #print(&#34;CONNECTION_STATS&#34;)
+    #print(self)
+
+    if packet.data is not None:
+        print(packet.data)
+        if pd.LOGIN_KEYWORD in packet.data:
+            self.analyze_login(packet.data)
+        else:
+            self.analyze_action(packet.data)
+
+    # Need to setup some sort of domain knowledge</code></pre>
+</details>
+</dd>
+<dt id="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.analyze_action"><code class="name flex">
+<span>def <span class="ident">analyze_action</span></span>(<span>self, data: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_action(self, data: str):
+    if pd.Actions.SUDO.name in data:
+        self.su_attempted = True
+    if pd.Actions.OPEN_SHELL.name in data:
+        self.shell_prompts += 1
+    if pd.Actions.CLOSE_SHELL.name in data:
+        self.shell_prompts = 0 if self.shell_prompts == 0 else self.shell_prompts - 1
+    if pd.Actions.CREATE_FILE.name in data:
+        self.file_creations += 1
+    if pd.Actions.FILE_TRANSFER.name in data:
+        self.num_outbound_ft += 1
+        if self.num_outbound_ft &gt; TRANSFER_THRESH:
+            self.compromised += 1
+            self.hot += 1
+    if pd.Actions.ACCESS_CONTROL_FILE.name in data:
+        self.num_access_control += 1
+    if pd.Actions.ACCESS_RESTRICTED_RES.name in data:
+        self.hot += 1
+    if pd.Actions.MODIFY_RESTRICTED_RES.name in data:
+        self.hot += 1</code></pre>
+</details>
+</dd>
+<dt id="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.analyze_login"><code class="name flex">
+<span>def <span class="ident">analyze_login</span></span>(<span>self, data: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_login(self, data: str):
+    if pd.LoginStatus.FAILED.name in data:
+        self.failed_logins += 1
+        if self.failed_logins &gt; LOGIN_THRESH:
+            self.hot += 1
+    else:
+        self.logged_in = True
+        if self.failed_logins &gt; LOGIN_THRESH:
+            self.compromised += 1
+        if pd.LoginStatus.ROOT.name in data:
+            self.root_shell = True
+            self.compromised += 1
+        if pd.LoginStatus.HOST.name in data:
+            self.is_host_login = True
+        else:
+            self.is_guest_login = True</code></pre>
+</details>
+</dd>
+<dt id="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.close_connection"><code class="name flex">
+<span>def <span class="ident">close_connection</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close_connection(self):
+    self.is_active = False
+    self.end_time = time.time()
+    self.duration = self.end_time - self.start_time
+
+    if self.ack and self.fin:
+        self.flag = FLAG_MAP[&#34;SF&#34;]
+    elif self.ack and self.rst:
+        self.flag = FLAG_MAP[&#34;RSTOS0&#34;]
+    elif self.rst:
+        self.flag = FLAG_MAP[&#34;REJ&#34;]
+    else:
+        self.flag = FLAG_MAP[&#34;S0&#34;]</code></pre>
+</details>
+</dd>
+<dt id="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.get_duration"><code class="name flex">
+<span>def <span class="ident">get_duration</span></span>(<span>self) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_duration(self) -&gt; float:
+    return self.duration if not self.is_active else time.time() - self.start_time</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="CSCD58_Final_Project.objects" href="index.html">CSCD58_Final_Project.objects</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="CSCD58_Final_Project.objects.tcp_connection.TCPConnection" href="#CSCD58_Final_Project.objects.tcp_connection.TCPConnection">TCPConnection</a></code></h4>
+<ul class="">
+<li><code><a title="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.add_packet" href="#CSCD58_Final_Project.objects.tcp_connection.TCPConnection.add_packet">add_packet</a></code></li>
+<li><code><a title="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.analyze_action" href="#CSCD58_Final_Project.objects.tcp_connection.TCPConnection.analyze_action">analyze_action</a></code></li>
+<li><code><a title="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.analyze_login" href="#CSCD58_Final_Project.objects.tcp_connection.TCPConnection.analyze_login">analyze_login</a></code></li>
+<li><code><a title="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.close_connection" href="#CSCD58_Final_Project.objects.tcp_connection.TCPConnection.close_connection">close_connection</a></code></li>
+<li><code><a title="CSCD58_Final_Project.objects.tcp_connection.TCPConnection.get_duration" href="#CSCD58_Final_Project.objects.tcp_connection.TCPConnection.get_duration">get_duration</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

@@ -6,6 +6,25 @@ from utils.static_definitions import PROTOCOL_MAP
 from utils.utils import port_to_service
 
 class TrimmedPacket():
+    """A trimmed version of scapy.packet.Packet
+
+    A trimmed version of the scapy packet, that holds less information but the relevant information
+    is in a more convenient format.
+
+    Attributes:
+        flags (List[char]): list of TCP flags that the packet contains
+        syn (bool): Whether the packet contains a SYN packet or not.
+        received (float): the time the packet was received
+        protocol (int): the protocol used to transmit the packet (we only accept TCP)
+        size (int): length in bytes of the payload
+        src_port (int): port number of the source
+        dst_port (int): port number of the destination
+        service (str): service of the packet (HTTP, HTTPS, etc)
+        src_ip (str): ip address of the source
+        dst_ip (str): ip address of the destination
+        data (str): if the packet contains a payload, it is stored here
+
+    """
     def __init__(self, packet: scapy.Packet):
 
         if scapy.TCP not in packet:
@@ -16,7 +35,7 @@ class TrimmedPacket():
         self.flags = packet[scapy.TCP].flags
         self.syn: bool = "S" in self.flags
 
-        self.recieved: float = time.time()
+        self.received: float = time.time()
         self.protocol: int = PROTOCOL_MAP["tcp"]
 
         self.size = len(packet[scapy.TCP].payload)
