@@ -1,11 +1,9 @@
 from scapy.all import send, IP, TCP, Raw, sr1
 import os
 from settings import (
-    IF_NAME,
     SERVER_IP,
     SERVER_PORT,
-    ATTACK_SERVER_IP,
-    ATTACK_SERVER_PORT,
+    ATTACK_SERVER_PORT
 )
 import utils.payload_data as pd
 
@@ -72,7 +70,6 @@ def tcp_teardown(seq, ack):
     fin_ack_packet = sr1(fin_packet)
 
     # Step 2: Wait for Server's FIN and Send ACK
-    # fin_from_server = ... # Logic to receive server's FIN packet
     last_ack = IP(dst=target_ip) / TCP(
         dport=target_port,
         seq=fin_ack_packet[TCP].ack,
@@ -93,18 +90,6 @@ def sim():
     seq = send_payload(seq, ack, pd.create_action_data(pd.Actions.OPEN_SHELL.value))
     seq = send_payload(seq, ack, pd.create_action_data(pd.Actions.CLOSE_SHELL.value))
     tcp_teardown(seq, ack)
-
-    # s_data = "start sending packet"
-    # a_data = "acknowledge"
-    # data = "Hello, this is some fake data!"
-    # f_data = "finish sending packet"
-    # number_of_packet_to_send = 1
-
-    # send_packet(destination_ip, source_port, destination_port, s_data, "S")
-    # send_packet(destination_ip, source_port, destination_port, a_data, "A")
-    # for _ in range(number_of_packet_to_send):
-    #     send_packet(destination_ip, source_port, destination_port, data, "PA")
-    # send_packet(destination_ip, source_port, destination_port, f_data, "F")
 
 
 def probe():
@@ -127,9 +112,7 @@ def probe():
 
 def port_scan():
     """Uses nmap to check if server ports are open (probe)"""
-    max_port = 8100
-    for i in range(7900, max_port):
-        os.system(f"nmap -p {i} {SERVER_IP}")
+    os.system(f"nmap -p {SERVER_PORT} {SERVER_IP}")
 
 
 def ack_dos():
